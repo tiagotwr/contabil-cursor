@@ -12,7 +12,7 @@ def efetiva():
         row = rows[0]
         return {'chave': row['chave'], 'modelo': row['modelo'],
                 'origem': 'aplicativo', 'revisao': row['atualizado'].isoformat()}
-    return {'chave': os.environ.get('NVIDIA_API_KEY', '').strip(),
+    return {'chave': (os.environ.get('NVIDIA_API_KEY') or os.environ.get('AI_NVIDIA_TOKEN') or '').strip(),
             'modelo': os.environ.get('NVIDIA_MODEL', '').strip() or MODELO_PADRAO,
             'origem': 'ambiente', 'revisao': 'ambiente'}
 

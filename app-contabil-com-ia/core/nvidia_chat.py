@@ -55,7 +55,7 @@ def _configuracao():
     loader = current_app.config.get('NVIDIA_CONFIG_LOADER') if has_app_context() else None
     if loader:
         return loader()
-    return {'chave': os.environ.get('NVIDIA_API_KEY', '').strip(),
+    return {'chave': (os.environ.get('NVIDIA_API_KEY') or os.environ.get('AI_NVIDIA_TOKEN') or '').strip(),
             'modelo': os.environ.get('NVIDIA_MODEL', '').strip() or MODELO_PADRAO,
             'origem': 'ambiente', 'revisao': 'ambiente'}
 
