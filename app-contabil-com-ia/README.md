@@ -7,7 +7,7 @@ Aplicativo Flask/PostgreSQL do workshop. A instalação começa vazia: nenhum la
 1. Em uma máquina nova, instale [uv](https://docs.astral.sh/uv/) e PostgreSQL 16. O uv baixa o Python sozinho; não é preciso instalar Python no sistema. O serviço PostgreSQL do Windows não precisa estar iniciado.
 2. Rode `preparar_ambiente.bat` uma vez; ele usa o uv para criar `.venv` e baixar as dependências.
 3. Rode `iniciar.bat`. O controlador cria um cluster PostgreSQL exclusivo em `.runtime`, escolhe portas livres e abre o navegador.
-4. Entre com `teste@teste.com` e senha `teste`. A página inicial é **Início**. Na primeira entrega, abra **Conciliar → Enviar relatórios** e carregue os dois XLSX. Importar e os demais módulos aparecem após serem pedidos.
+4. Entre com o e-mail e a senha definidos em `ADMINUSER` e `ADMINPASSWORD`. A página inicial é **Início**. Na primeira entrega, abra **Conciliar → Enviar relatórios** e carregue os dois XLSX. Importar e os demais módulos aparecem após serem pedidos.
 5. Rode `parar.bat` para encerrar apenas a instância que este projeto iniciou. Para abrir novamente, rode `iniciar.bat`.
 
 O modelo baixado em Importar é sintético e serve para mostrar o formato do arquivo. As bases do aluno não acompanham este pacote.

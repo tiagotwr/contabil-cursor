@@ -40,7 +40,7 @@
         {% if modulo_disponivel('configuracao-ia') %}
         <a class="nav-item {{ 'is-active' if active == 'configuracao-ia' }}" href="/configuracao-ia" {% if active == 'configuracao-ia' %}aria-current="page"{% endif %}><i class="ph ph-gear-six" aria-hidden="true"></i><span>Configuração da IA</span></a>
         {% endif %}
-        <div class="account"><span class="avatar">{{ (user_email or 'T')[:1]|upper }}</span><span><strong>{{ user_email or 'teste@teste.com' }}</strong><small>Sessão demonstrativa</small></span></div>
+        <div class="account"><span class="avatar">{{ (user_email or '?')[:1]|upper }}</span><span><strong>{{ user_email }}</strong><small>Administrador</small></span></div>
         <form method="post" action="/logout"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="logout" type="submit" title="Sair"><i class="ph ph-sign-out"></i><span>Sair</span></button></form>
       </div>
     </aside>

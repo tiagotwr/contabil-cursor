@@ -44,11 +44,47 @@ def semear_demonstracao(cur):
     cur.execute('INSERT INTO conciliacao VALUES (1,%s)',(Json(load('extrato.json')),))
 
 
+def ler_dotenv():
+    valores = {}
+    for caminho in (ROOT / '.env', ROOT.parent / '.env'):
+        if not caminho.is_file():
+            continue
+        for linha in caminho.read_text(encoding='utf-8').splitlines():
+            linha = linha.strip()
+            if not linha or linha.startswith('#') or '=' not in linha:
+                continue
+            chave, valor = linha.split('=', 1)
+            valores[chave.strip()] = valor.strip().strip('"').strip("'")
+    return valores
+
+
+def credenciais_admin():
+    arquivo = ler_dotenv()
+    email = (os.environ.get('ADMINUSER') or os.environ.get('ADMIN_USER') or arquivo.get('ADMINUSER') or arquivo.get('ADMIN_USER') or '').strip().lower()
+    senha = os.environ.get('ADMINPASSWORD') or os.environ.get('ADMIN_PASSWORD') or arquivo.get('ADMINPASSWORD') or arquivo.get('ADMIN_PASSWORD') or ''
+    return email, senha
+
+
+def sincronizar_admin(cur):
+    email, senha = credenciais_admin()
+    if not email or not senha:
+        raise RuntimeError('Defina ADMINUSER e ADMINPASSWORD para criar o único acesso.')
+    if len(senha.encode('utf-8')) > 72:
+        raise RuntimeError('A senha do admin excede o limite de 72 bytes.')
+    cur.execute('DELETE FROM preferencias_ui WHERE email <> %s', (email,))
+    cur.execute('DELETE FROM usuarios WHERE email <> %s', (email,))
+    cur.execute(
+        'INSERT INTO usuarios(email, senha_hash) VALUES (%s, %s) ON CONFLICT (email) DO UPDATE SET senha_hash = EXCLUDED.senha_hash',
+        (email, generate_password_hash(senha).decode()),
+    )
+    print('Acesso restrito ao administrador.')
+
+
 def main():
     with connection() as conn, conn.cursor() as cur:
         cur.execute('SELECT pg_advisory_xact_lock(20260910)')
         cur.execute((ROOT/'scripts/schema.sql').read_text(encoding='utf-8'))
-        cur.execute('INSERT INTO usuarios VALUES (%s,%s) ON CONFLICT(email) DO NOTHING',('teste@teste.com',generate_password_hash('teste').decode()))
+        sincronizar_admin(cur)
         for versao in (1,2,3,4,5,6):
             cur.execute('INSERT INTO versoes_schema(versao) VALUES(%s) ON CONFLICT DO NOTHING',(versao,))
         print('Banco preparado. Acesso disponível; dados existentes preservados.')
